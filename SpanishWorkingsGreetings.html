@@ -734,10 +734,13 @@
       /* Game overlay (99-style) */
       .game-overlay {
         position: fixed;
-        inset: 0;
+        top: 0;
+        bottom: 0;
+        left: var(--sidebar-width);
+        right: 0;
         background: linear-gradient(180deg, rgba(2,6,23,0.9), rgba(2,6,23,0.95));
         display: none;
-        z-index: 60;
+        z-index: 15; /* sit below the sidebar so collapse button remains visible */
         align-items: center;
         justify-content: center;
         padding: 28px;
@@ -771,11 +774,83 @@
       .game-overlay.show { display:flex; }
 
       /* Leaderboard modal */
-      .leaderboard-overlay { position: fixed; inset: 0; display: none; z-index: 70; align-items: center; justify-content: center; background: rgba(2,6,23,0.85); }
+      .leaderboard-overlay { position: fixed; top:0; bottom:0; left:var(--sidebar-width); right:0; display: none; z-index: 15; align-items: center; justify-content: center; background: rgba(2,6,23,0.85); }
       .leaderboard-panel { width: min(720px, 96%); background: var(--practice-panel-alt); border-radius: 14px; padding: 18px; color: var(--practice-text); box-shadow: 0 16px 42px rgba(2,6,23,0.6); }
       .leaderboard-list { max-height: 360px; overflow: auto; margin-top: 12px; }
       .leaderboard-row { display:flex; justify-content:space-between; padding:8px 10px; border-bottom:1px solid rgba(148,163,184,0.04); }
       .leaderboard-overlay.show { display:flex; }
+
+
+      /* Full-screen race overlay */
+      .race-overlay {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: var(--sidebar-width);
+        right: 0;
+        background: linear-gradient(180deg, rgba(2,6,23,0.95), rgba(2,6,23,0.98));
+        display: none;
+        z-index: 15; /* keep below sidebar */
+        align-items: stretch;
+        justify-content: center;
+        padding: 18px;
+      }
+
+      .race-overlay.show { display: flex; }
+
+      /* When sidebar is collapsed, keep overlays aligned to collapsed width */
+      .sidebar.collapsed ~ .race-overlay,
+      .sidebar.collapsed ~ .game-overlay,
+      .sidebar.collapsed ~ .leaderboard-overlay {
+        left: var(--sidebar-collapsed);
+      }
+
+      .race-panel {
+        width: 100%;
+        height: 100%;
+        background: var(--practice-panel-alt);
+        border-radius: 10px;
+        padding: 18px;
+        display: grid;
+        grid-template-columns: 320px 1fr 320px;
+        gap: 14px;
+        box-shadow: 0 24px 80px rgba(2,6,23,0.7);
+      }
+
+      .race-side { background: transparent; color: var(--practice-text); display:flex; flex-direction:column; gap:12px; }
+      .party-list { background: var(--practice-panel); padding:10px; border-radius:8px; overflow:auto; max-height:50vh; }
+      .party-row { display:flex; justify-content:space-between; padding:8px 10px; border-bottom:1px solid rgba(148,163,184,0.04); }
+      .track-wrap { padding:12px; display:flex; flex-direction:column; gap:10px; align-items:stretch; justify-content:center; }
+      .track-row { background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:8px; border-radius:8px; display:flex; flex-direction:column; gap:6px; }
+      .progress-bar { height:14px; background: rgba(255,255,255,0.06); border-radius:8px; overflow:hidden; }
+      .progress-fill { height:100%; width:0%; background: linear-gradient(90deg, var(--accent), var(--primary)); }
+      .race-controls { display:flex; gap:8px; align-items:center; }
+      .audio-wrap { position:relative; display:inline-flex; align-items:center; }
+      .audio-btn {
+        width:36px; height:36px; border-radius:999px; display:grid; place-items:center;
+        background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+        border: 1px solid rgba(148,163,184,0.06); color:var(--practice-text); font-weight:800; cursor:pointer;
+        font-size:0.9rem;
+      }
+      .audio-btn:hover { transform:scale(1.03); }
+      .audio-tooltip { position:absolute; left:44px; top:50%; transform:translateY(-50%); background:var(--practice-panel); color:var(--practice-text); padding:6px 8px; border-radius:6px; font-size:0.85rem; display:none; white-space:nowrap; border:1px solid rgba(148,163,184,0.06); }
+      .audio-wrap:hover .audio-tooltip { display:block; }
+      /* avatars */
+      .avatar { width:40px; height:40px; border-radius:50%; display:inline-grid; place-items:center; color:white; font-weight:800; flex-shrink:0; }
+      .avatar.small { width:28px; height:28px; font-size:0.85rem; }
+      .party-row { display:flex; justify-content:space-between; padding:8px 10px; border-bottom:1px solid rgba(148,163,184,0.04); align-items:center; }
+      .party-meta { display:flex; gap:10px; align-items:center; }
+
+      /* flashcards */
+      .flashcard-area { display:flex; flex-direction:column; gap:12px; }
+      .flashcard { width: 320px; height: 180px; perspective: 1000px; margin: 0 auto; }
+      .card-inner { width:100%; height:100%; position:relative; transform-style: preserve-3d; transition: transform 0.6s; }
+      .card-inner.is-flipped { transform: rotateY(180deg); }
+      .card-face { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; border-radius:12px; backface-visibility: hidden; padding:12px; box-shadow: 0 10px 30px rgba(2,6,23,0.5); }
+      .card-front { background: var(--phrase-panel); color: var(--practice-text); font-weight:800; font-size:1.5rem; }
+      .card-back { background: var(--card-surface-alt); color: var(--practice-muted); transform: rotateY(180deg); font-weight:700; font-size:1.05rem; }
+      .card-controls { display:flex; gap:8px; justify-content:center; margin-top:6px; }
+
 
       .slide-footer {
         margin-top: 28px;
@@ -1006,6 +1081,29 @@
                   <div class="phrase-meaning" data-en-detail="“Hello” / “Hi” — a friendly way to begin." data-es-detail="“Hello” / “Hi” — una manera amigable de comenzar.">“Hello” / “Hi” — una manera amigable de comenzar.</div>
                 </div>
 
+                <div id="wordBank" class="mini-panel" style="margin-top:18px;">
+                  <h3>Word bank</h3>
+                  <div id="wordBankList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:8px;padding-top:6px;"></div>
+                </div>
+
+                <div id="flashcardArea" class="mini-panel" style="margin-top:18px;">
+                  <h3>Review cards</h3>
+                  <div class="flashcard-area">
+                    <div class="flashcard" id="flashcard">
+                      <div class="card-inner" id="cardInner">
+                        <div class="card-face card-front" id="cardFront">Spanish</div>
+                        <div class="card-face card-back" id="cardBack">English</div>
+                      </div>
+                    </div>
+                    <div class="card-controls">
+                      <button class="step-btn" id="prevCard" type="button">Prev</button>
+                      <button class="step-btn" id="flipCard" type="button">Flip</button>
+                      <button class="step-btn" id="nextCard" type="button">Next</button>
+                      <button class="step-btn" id="shuffleCards" type="button">Shuffle</button>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="match-panel">
                   <h3 data-en-title="Try it" data-es-title="Pruébalo">Pruébalo</h3>
                   <div style="padding:18px; display:flex; flex-direction:column; gap:14px; align-items:center; justify-content:center; min-height:320px;">
@@ -1082,6 +1180,18 @@
         </div>
 
           <!-- Leaderboard overlay -->
+          <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
+            <label style="white-space:nowrap;color:var(--practice-muted);">Your Team:</label>
+            <select id="teamSelect" style="flex:0 0 140px;padding:8px;border-radius:8px;background:transparent;color:var(--practice-text);border:1px solid rgba(148,163,184,0.06);">
+              <option value="Red">Red Team</option>
+              <option value="Blue">Blue Team</option>
+              <option value="Green">Green Team</option>
+              <option value="Gold">Gold Team</option>
+              <option value="Silver">Silver Team</option>
+              <option value="Crimson">Crimson Team</option>
+            </select>
+            <button class="step-btn" id="generatePartyBtn" type="button">Generate Party</button>
+          </div>
           <div class="leaderboard-overlay" id="leaderboardOverlay" aria-hidden="true">
             <div class="leaderboard-panel">
               <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -1101,6 +1211,66 @@
         <div class="game-footer">
           <div style="color:var(--practice-muted);">Round <span id="gameRound">1</span> / <span id="gameRoundsTotal">10</span></div>
           <div style="color:var(--practice-muted);">Correct: <span id="gameCorrect">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full-screen party race overlay -->
+    <div class="race-overlay" id="raceOverlay" aria-hidden="true">
+      <div class="race-panel" role="dialog" aria-modal="true">
+        <div class="race-side">
+          <h3 style="margin:0;">Your Party</h3>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input id="serverUrlInput" placeholder="ws://localhost:3000" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(148,163,184,0.06);background:transparent;color:var(--practice-text);">
+            <button class="step-btn" id="connectServerBtn" type="button">Connect</button>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
+            <input id="playerNameInput" placeholder="Your name" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(148,163,184,0.06);background:transparent;color:var(--practice-text);">
+            <input id="roomInput" placeholder="Room name" style="flex:0 0 140px;padding:8px;border-radius:8px;border:1px solid rgba(148,163,184,0.06);background:transparent;color:var(--practice-text);">
+            <button class="step-btn" id="joinRoomBtn" type="button">Join</button>
+          </div>
+          <div style="margin-top:8px;">
+            <h4 style="margin:6px 0 8px;color:var(--practice-muted);">Players in room</h4>
+            <div id="roomRoster" style="background:var(--practice-panel);padding:8px;border-radius:8px;max-height:180px;overflow:auto;color:var(--practice-text);">Not connected</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input id="newMemberInput" placeholder="Add member name" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(148,163,184,0.06);background:transparent;color:var(--practice-text);">
+            <button class="step-btn" id="addMemberBtn" type="button">Add</button>
+          </div>
+          <div class="party-list" id="partyList"></div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
+            <label style="white-space:nowrap;color:var(--practice-muted);">Opponents:</label>
+            <select id="opponentCount" style="flex:0 0 80px;padding:8px;border-radius:8px;background:transparent;color:var(--practice-text);border:1px solid rgba(148,163,184,0.06);">
+              <option value="1">1</option>
+              <option value="2" selected>2</option>
+              <option value="3">3</option>
+            </select>
+          </div>
+          <div class="race-controls" style="margin-top:auto;">
+            <button class="primary-btn" id="startRaceBtn" type="button">Start Race</button>
+            <button class="step-btn" id="closeRaceBtn" type="button">Exit</button>
+          </div>
+        </div>
+
+        <div class="track-wrap" id="trackWrap">
+          <h2 style="margin:0;color:var(--practice-text);text-align:center;">Party Race</h2>
+          <div id="raceTracks" style="display:flex;flex-direction:column;gap:10px;margin-top:12px;"></div>
+          <div style="margin-top:12px;color:var(--practice-muted);text-align:center;">Answer questions in the center panel to advance your party. Opponents progress automatically.</div>
+        </div>
+
+        <div class="race-side">
+          <h3 style="margin:0;">Question</h3>
+          <div id="raceQuestionPanel" style="background:var(--practice-panel);padding:12px;border-radius:8px;margin-top:8px;min-height:120px;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="audio-wrap">
+                <button id="raceAudioBtn" class="audio-btn" type="button" aria-label="Play pronunciation">?</button>
+                <div class="audio-tooltip">Play pronunciation of the answer</div>
+              </div>
+              <div id="raceQuestion" style="font-weight:800;font-size:1.2rem;color:var(--practice-text);">Press Start to begin</div>
+            </div>
+            <div id="raceChoices" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
+            <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px;"><button class="step-btn" id="skipRaceBtn" type="button">Skip</button></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1131,7 +1301,23 @@
         { pair: 'hola', english: 'Hello', spanish: 'Hola' },
         { pair: 'buenos-dias', english: 'Good morning', spanish: 'Buenos días' },
         { pair: 'buenas-tardes', english: 'Good afternoon', spanish: 'Buenas tardes' },
-        { pair: 'buenas-noches', english: 'Good evening', spanish: 'Buenas noches' }
+        { pair: 'buenas-noches', english: 'Good evening', spanish: 'Buenas noches' },
+        { pair: 'como-estas', english: 'How are you?', spanish: '¿Cómo estás?' },
+        { pair: 'que-tal', english: "What's up?", spanish: '¿Qué tal?' },
+        { pair: 'buenas', english: 'Hi', spanish: '¡Buenas!' },
+        { pair: 'mucho-gusto', english: 'Nice to meet you', spanish: 'Mucho gusto' },
+        { pair: 'encantado', english: 'Pleased to meet you', spanish: 'Encantado' },
+        { pair: 'buen-provecho', english: 'Enjoy your meal', spanish: 'Buen provecho' },
+        { pair: 'bienvenido', english: 'Welcome', spanish: 'Bienvenido' },
+        { pair: 'nos-vemos', english: 'See you', spanish: 'Nos vemos' },
+        { pair: 'hasta-luego', english: 'See you later', spanish: 'Hasta luego' },
+        { pair: 'adios', english: 'Goodbye', spanish: 'Adiós' },
+        { pair: 'hasta-manana', english: 'See you tomorrow', spanish: 'Hasta mañana' },
+        { pair: 'saludos', english: 'Greetings', spanish: 'Saludos' },
+        { pair: 'como-te-va', english: 'How is it going?', spanish: '¿Cómo te va?' },
+        { pair: 'que-pasa', english: "What's happening?", spanish: '¿Qué pasa?' },
+        { pair: 'buenas-noches-casual', english: 'Night', spanish: 'Noche' },
+        { pair: 'buen-dia', english: 'Have a good day', spanish: 'Que tengas un buen día' }
       ];
 
       let englishMode = false;
@@ -1143,6 +1329,9 @@
       let timer = 0;
       let timerId = null;
       let timerActive = false;
+      // pools to ensure broader cycling through greetings
+      let gamePool = [];
+      let racePool = [];
 
       function shuffleArray(items) {
         const copy = [...items];
@@ -1153,9 +1342,33 @@
         return copy;
       }
 
+      function refillPools() {
+        gamePool = shuffleArray(greetingDeck.slice());
+        racePool = shuffleArray(greetingDeck.slice());
+      }
+
+      function getNextFromPool(pool) {
+        if (!pool || !pool.length) return null;
+        return pool.pop();
+      }
+
       function createHiddenDeck() {
         const baseOrder = greetingDeck.map((_, index) => index);
         hiddenDeckOrder = shuffleArray(baseOrder);
+      }
+
+      function renderWordBank() {
+        const wb = document.getElementById('wordBankList');
+        if (!wb) return;
+        wb.innerHTML = '';
+        greetingDeck.forEach((g) => {
+          const div = document.createElement('div');
+          div.style.padding = '8px';
+          div.style.borderRadius = '8px';
+          div.style.background = 'linear-gradient(135deg, rgba(46,107,255,0.02), rgba(98,208,181,0.02))';
+          div.innerHTML = `<div style="font-weight:800;">${g.spanish}</div><div style="color:var(--practice-muted);font-size:0.9rem;">${g.english}</div>`;
+          wb.appendChild(div);
+        });
       }
 
       function renderDragCards() {
@@ -1442,6 +1655,40 @@
       setSiteTheme(false);
       createHiddenDeck();
       renderDragCards();
+      refillPools();
+      renderWordBank();
+      // flashcard review setup
+      let flashPool = [];
+      let flashIndex = 0;
+      const cardInner = document.getElementById('cardInner');
+      const cardFront = document.getElementById('cardFront');
+      const cardBack = document.getElementById('cardBack');
+      const prevCardBtn = document.getElementById('prevCard');
+      const nextCardBtn = document.getElementById('nextCard');
+      const flipCardBtn = document.getElementById('flipCard');
+      const shuffleCardsBtn = document.getElementById('shuffleCards');
+
+      function refillFlashPool() { flashPool = shuffleArray(greetingDeck.slice()); flashIndex = 0; }
+
+      function renderFlash() {
+        if (!flashPool.length) { refillFlashPool(); }
+        const item = flashPool[flashIndex % flashPool.length];
+        if (!item) return;
+        cardFront.textContent = item.spanish;
+        cardBack.textContent = item.english;
+        cardInner.classList.remove('is-flipped');
+      }
+
+      function nextFlash() { flashIndex = (flashIndex + 1) % flashPool.length; renderFlash(); }
+      function prevFlash() { flashIndex = (flashIndex - 1 + flashPool.length) % flashPool.length; renderFlash(); }
+      function flipFlash() { cardInner.classList.toggle('is-flipped'); }
+
+      if (prevCardBtn) prevCardBtn.addEventListener('click', prevFlash);
+      if (nextCardBtn) nextCardBtn.addEventListener('click', nextFlash);
+      if (flipCardBtn) flipCardBtn.addEventListener('click', flipFlash);
+      if (shuffleCardsBtn) shuffleCardsBtn.addEventListener('click', () => { refillFlashPool(); renderFlash(); });
+
+      refillFlashPool(); renderFlash();
       updateScoreDisplay();
 
       if (startTimerBtn) {
@@ -1500,6 +1747,7 @@
         score = 0;
         multiplier = 1.0;
         updateScoreDisplay();
+        refillPools();
         renderNextQuestion();
       }
 
@@ -1510,7 +1758,9 @@
           return;
         }
 
-        const item = greetingDeck[Math.floor(Math.random() * greetingDeck.length)];
+        // draw from shuffled pool to maximize variety
+        let item = getNextFromPool(gamePool);
+        if (!item) { refillPools(); item = getNextFromPool(gamePool); }
         const correctSpanish = item.spanish;
         const englishPrompt = item.english;
 
@@ -1617,7 +1867,419 @@
         setTimeout(() => closeGameOverlay(), 1200);
       }
 
-      if (tryItBtn) tryItBtn.addEventListener('click', openGameOverlay);
+      // ---- Party race mode functions ----
+      const raceOverlay = document.getElementById('raceOverlay');
+      const partyListEl = document.getElementById('partyList');
+      const newMemberInput = document.getElementById('newMemberInput');
+      const addMemberBtn = document.getElementById('addMemberBtn');
+      const startRaceBtn = document.getElementById('startRaceBtn');
+      const closeRaceBtn = document.getElementById('closeRaceBtn');
+      const opponentCountEl = document.getElementById('opponentCount');
+      const raceTracksEl = document.getElementById('raceTracks');
+      const raceQuestionEl = document.getElementById('raceQuestion');
+      const raceChoicesEl = document.getElementById('raceChoices');
+      const skipRaceBtn = document.getElementById('skipRaceBtn');
+      const raceAudioBtn = document.getElementById('raceAudioBtn');
+      const teamSelect = document.getElementById('teamSelect');
+      const generatePartyBtn = document.getElementById('generatePartyBtn');
+      const serverUrlInput = document.getElementById('serverUrlInput');
+      const connectServerBtn = document.getElementById('connectServerBtn');
+      const playerNameInput = document.getElementById('playerNameInput');
+      const roomInput = document.getElementById('roomInput');
+      const joinRoomBtn = document.getElementById('joinRoomBtn');
+      const roomRosterEl = document.getElementById('roomRoster');
+
+      let socket = null;
+      let joinedRoom = false;
+      let joinedRoomName = '';
+
+      function loadSocketIoClient(cb) {
+        if (window.io) return cb && cb();
+        const s = document.createElement('script');
+        s.src = 'https://cdn.socket.io/4.5.4/socket.io.min.js';
+        s.onload = cb; s.onerror = ()=>{ console.warn('Failed to load socket.io client'); };
+        document.head.appendChild(s);
+      }
+
+      connectServerBtn?.addEventListener('click', ()=>{
+        const url = (serverUrlInput && serverUrlInput.value) ? serverUrlInput.value.trim() : '';
+        if (!url) return alert('Enter server URL');
+        loadSocketIoClient(()=>{
+          try{
+            socket = window.io(url);
+            socket.on('connect', ()=>{ alert('Connected to server'); });
+            socket.on('raceState', (st)=>{
+              // update UI if desired
+              console.log('raceState', st);
+            });
+            // tell server our party when building parties
+          } catch(e){ console.warn(e); alert('Socket connect failed'); }
+        });
+      });
+
+      joinRoomBtn?.addEventListener('click', ()=>{
+        if (!socket) return alert('Connect to a server first');
+        const name = (playerNameInput && playerNameInput.value) ? playerNameInput.value.trim() : '';
+        const room = (roomInput && roomInput.value) ? roomInput.value.trim() : '';
+        if (!room) return alert('Enter room');
+        socket.emit('joinRoom', { room, name, party: userParty });
+        joinedRoom = true; joinedRoomName = room;
+        // reset previous listeners to avoid duplicates
+        socket.off('roster'); socket.off('opponentProgress'); socket.off('raceStart'); socket.off('errorMsg');
+        socket.on('roster', (roster) => {
+          // build raceParties from roster
+          raceParties = roster.map(r => ({ name: (r.info && r.info.name) ? `${r.info.name}` : 'Player', members: (r.info && r.info.party) || [], progress: 0, id: r.id, isUser: r.id === socket.id }));
+          // update local player name if server assigned one
+          const me = roster.find(r => r.id === socket.id);
+          if (me && me.info && me.info.name) {
+            if (playerNameInput) playerNameInput.value = me.info.name;
+          }
+          renderTracks();
+          // render roster list
+          if (roomRosterEl) {
+            if (!roster.length) {
+              roomRosterEl.innerHTML = '<div style="color:var(--practice-muted);padding:8px;">No players in room</div>';
+            } else {
+              roomRosterEl.innerHTML = '';
+              roster.forEach((r) => {
+                const name = (r.info && r.info.name) ? r.info.name : 'Player';
+                const party = (r.info && r.info.party) ? r.info.party : [];
+                const div = document.createElement('div');
+                div.style.display = 'flex';
+                div.style.alignItems = 'center';
+                div.style.justifyContent = 'space-between';
+                div.style.padding = '6px 8px';
+                div.style.borderBottom = '1px solid rgba(148,163,184,0.04)';
+                const left = document.createElement('div');
+                left.style.display = 'flex'; left.style.alignItems = 'center'; left.style.gap = '8px';
+                const img = document.createElement('img'); img.src = avatarDataUrlFor(name, 36); img.className = 'avatar small'; img.alt = name;
+                const span = document.createElement('div'); span.textContent = name; span.style.fontWeight = '700';
+                left.appendChild(img); left.appendChild(span);
+                const right = document.createElement('div'); right.style.color = 'var(--practice-muted)'; right.style.fontSize = '0.9rem'; right.textContent = party.join(', ');
+                div.appendChild(left); div.appendChild(right);
+                roomRosterEl.appendChild(div);
+              });
+            }
+          }
+        });
+
+        socket.on('opponentProgress', ({ id, progress }) => {
+          const p = raceParties.find(r=>r.id===id);
+          if (p) { p.progress = progress; updateTracksUI(); }
+        });
+
+        socket.on('raceStart', (state) => {
+          // start local race when server signals
+          raceActive = true; renderTracks(); raceTurn();
+        });
+        socket.on('errorMsg', ({message})=>{ alert(message); });
+      });
+
+      let userParty = [];
+      let raceParties = [];
+      let raceActive = false;
+      let raceTimer = null;
+      let racePerTurnTime = 8;
+      let currentRaceAnswer = '';
+
+      function openRaceOverlay() {
+        raceOverlay.classList.add('show');
+        raceOverlay.setAttribute('aria-hidden', 'false');
+        // reset UI
+        renderPartyList();
+        renderTracks();
+        raceQuestionEl.textContent = 'Add members and press Start Race.';
+        raceChoicesEl.innerHTML = '';
+      }
+
+      function closeRaceOverlay() {
+        raceOverlay.classList.remove('show');
+        raceOverlay.setAttribute('aria-hidden', 'true');
+        stopRace();
+      }
+
+      function renderPartyList() {
+        partyListEl.innerHTML = '';
+        if (!userParty.length) {
+          partyListEl.innerHTML = '<div style="padding:8px;color:var(--practice-muted);">No members yet. Add names to form your party.</div>';
+          return;
+        }
+        userParty.forEach((m, i) => {
+          const row = document.createElement('div');
+          row.className = 'party-row';
+          const pfp = avatarDataUrlFor(m || ('Member'+i), 64);
+          row.innerHTML = `<div class="party-meta"><img class="avatar" src="${pfp}" alt="${escapeHtml(m)}"><div>${i+1}. ${escapeHtml(m)}</div></div><div><button class="step-btn" data-remove="${i}">Remove</button></div>`;
+          partyListEl.appendChild(row);
+          row.querySelector('button')?.addEventListener('click', (e) => {
+            const idx = Number(e.target.dataset.remove);
+            userParty.splice(idx,1);
+            renderPartyList();
+          });
+        });
+      }
+
+      function escapeHtml(s){ return String(s).replace(/[&<>\"]/g, (c)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+      function initials(name) {
+        if (!name) return '';
+        const parts = name.trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) return '';
+        if (parts.length === 1) return parts[0].slice(0,2).toUpperCase();
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+      }
+
+      function colorFromString(str) {
+        let h = 0;
+        for (let i=0;i<str.length;i++) h = (h<<5) - h + str.charCodeAt(i);
+        const hue = Math.abs(h) % 360;
+        return `linear-gradient(135deg, hsl(${hue} 70% 45% / 1), hsl(${(hue+30)%360} 60% 50% / 1))`;
+      }
+
+      const animalEmoji = {
+        Fox: '🦊', Sparrow: '🐦', Otter: '🦦', Hawk: '🦅', Panda: '🐼', Whale: '🐋', Koala: '🐨', Tiger: '🐯', Dolphin: '🐬', Lynx: '🐱', Dolphin: '🐬'
+      };
+
+      function detectAnimalFromName(name) {
+        if (!name) return null;
+        const animals = Object.keys(animalEmoji).map(a => a.toLowerCase());
+        for (const a of animals) {
+          if (name.toLowerCase().includes(a)) return a;
+        }
+        // fallback: pick random animal from list
+        return animals[Math.floor(Math.random() * animals.length)];
+      }
+
+      function avatarDataUrlFor(name, size = 64) {
+        const animal = detectAnimalFromName(name) || 'otter';
+        const emoji = animalEmoji[animal.charAt(0).toUpperCase() + animal.slice(1)] || '🐾';
+        const bg = `hsl(${Math.abs(hashCode(name)) % 360} 68% 46%)`;
+        const svg = `
+          <svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}' viewBox='0 0 ${size} ${size}'>
+            <defs>
+              <linearGradient id='g' x1='0' x2='1' y1='0' y2='1'>
+                <stop offset='0' stop-color='${bg}' stop-opacity='1'/>
+                <stop offset='1' stop-color='${shadeColor(bg,20)}' stop-opacity='1'/>
+              </linearGradient>
+            </defs>
+            <rect width='100%' height='100%' rx='50%' fill='url(#g)' />
+            <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='${Math.round(size*0.5)}' font-family='Segoe UI Emoji, Apple Color Emoji, Noto Color Emoji' >${emoji}</text>
+          </svg>`;
+        return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+      }
+
+      function hashCode(str){ let h=0; for(let i=0;i<str.length;i++) h=(h<<5)-h+str.charCodeAt(i); return h; }
+      function shadeColor(color, amt){
+        // expects 'hsl(h s% l%)' return a slightly shifted hsl string
+        try{
+          const m = color.match(/hsl\((\d+)\s*(\d+)%\s*(\d+)%\)/);
+          if(!m) return color;
+          let h = Number(m[1]); let s = Number(m[2]); let l = Number(m[3]); l = Math.min(90, l + (amt/10));
+          return `hsl(${h} ${s}% ${l}%)`;
+        } catch(e){ return color; }
+      }
+
+      addMemberBtn.addEventListener('click', () => {
+        const v = (newMemberInput.value || '').trim();
+        if (!v) return;
+        userParty.push(v);
+        newMemberInput.value = '';
+        renderPartyList();
+      });
+
+      generatePartyBtn?.addEventListener('click', () => {
+        // generate 3 names and replace party
+        const generated = [];
+        for (let i=0;i<3;i++) generated.push(randomName());
+        userParty = generated;
+        renderPartyList();
+      });
+
+      function makeOpponent(name) {
+        return { name, members: [name+' A', name+' B'], progress: 0 };
+      }
+
+      function buildRaceParties() {
+        raceParties = [];
+        // user's party
+        const chosenTeam = (teamSelect && teamSelect.value) ? teamSelect.value : (userParty.length ? 'You' : 'You');
+        const partyName = userParty.length ? `${chosenTeam} — ${userParty.join(', ')}` : `${chosenTeam}`;
+        raceParties.push({ name: partyName, members: [...userParty], progress: 0, isUser: true });
+        // opponents
+        const count = Number(opponentCountEl.value) || 2;
+        const baseOpponents = ['Red', 'Blue', 'Green', 'Gold', 'Silver', 'Crimson'];
+        // exclude chosen team base name so opponents differ
+        const chosen = (teamSelect && teamSelect.value) ? teamSelect.value : null;
+        const opponents = baseOpponents.filter(o => o !== chosen);
+        for (let i=0;i<count;i++) {
+          const n = opponents[Math.floor(Math.random()*opponents.length)] + ' Team';
+          raceParties.push({ name: n, members: [], progress: 0, isUser: false });
+        }
+      }
+
+      function renderTracks() {
+        raceTracksEl.innerHTML = '';
+        raceParties.forEach((p, idx) => {
+          const row = document.createElement('div');
+          row.className = 'track-row';
+          const pfp = avatarDataUrlFor(p.name || ('Team'+idx), 36);
+          const av = `<img class="avatar small" src="${pfp}" alt="${escapeHtml(p.name)}">`;
+          row.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;gap:10px;align-items:center;">${av}<strong>${escapeHtml(p.name)}</strong></div><div style="color:var(--practice-muted);">${Math.round(p.progress)}%</div></div><div class="progress-bar"><div class="progress-fill" data-idx="${idx}" style="width:${p.progress}%"></div></div>`;
+          raceTracksEl.appendChild(row);
+        });
+      }
+
+      function updateTracksUI() {
+        raceParties.forEach((p, idx) => {
+          const fill = raceTracksEl.querySelector(`.progress-fill[data-idx=\"${idx}\"]`);
+          if (fill) fill.style.width = Math.min(100, p.progress) + '%';
+        });
+      }
+
+      function stopRace() {
+        raceActive = false;
+        if (raceTimer) { clearTimeout(raceTimer); raceTimer = null; }
+      }
+
+      function startRace() {
+        if (raceActive) return;
+        if (!joinedRoom || !joinedRoomName) {
+          alert('This mode requires joining a live room. Please connect to a server and join a room.');
+          return;
+        }
+        // request server to start race for room; server will broadcast
+        try { socket.emit('startRace', { room: joinedRoomName, state: {} }); } catch(e) { console.warn(e); }
+        // start local flow as well
+        raceActive = true;
+        renderTracks();
+        raceTurn();
+      }
+
+      function raceTurn() {
+        if (!raceActive) return;
+        // pick a question for the user
+        let item = getNextFromPool(racePool);
+        if (!item) { refillPools(); item = getNextFromPool(racePool); }
+        const correct = item.spanish;
+        raceQuestionEl.textContent = item.english;
+        currentRaceAnswer = correct;
+        // build options
+        const otherOpts = greetingDeck.filter(g=>g.spanish!==correct).map(g=>g.spanish);
+        const options = [correct];
+        while (options.length<4 && otherOpts.length) {
+          const i = Math.floor(Math.random()*otherOpts.length);
+          options.push(otherOpts.splice(i,1)[0]);
+        }
+        // shuffle
+        for (let i=options.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [options[i],options[j]]=[options[j],options[i]]; }
+        raceChoicesEl.innerHTML = '';
+        options.forEach(opt => {
+          const b = document.createElement('button');
+          b.type='button'; b.className='choice-btn'; b.textContent = opt;
+          b.addEventListener('click', ()=> handleRaceChoice(b, opt===correct));
+          raceChoicesEl.appendChild(b);
+        });
+
+        // per-turn timeout: if user doesn't answer, mark waiting for others (no AI advances in live mode)
+        let remaining = racePerTurnTime;
+        if (raceTimer) { clearTimeout(raceTimer); raceTimer = null; }
+        raceTimer = setTimeout(()=>{
+          if (joinedRoom) {
+            setMatchStatus('No answer — waiting for other players.');
+            // do not auto-advance opponents; wait for progress events from server
+            return;
+          }
+          // offline fallback: treat as incorrect and continue
+          advanceOpponents(5,15);
+          updateTracksUI();
+          checkForWinnerOrContinue();
+        }, racePerTurnTime*1000);
+      }
+
+      function speakPhrase(text, lang = 'es-ES') {
+        if (!text) return;
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = lang;
+        utter.rate = 0.95;
+        utter.pitch = 1.05;
+        const v = chooseVoice();
+        if (v) utter.voice = v;
+        window.speechSynthesis.speak(utter);
+      }
+
+      if (raceAudioBtn) {
+        raceAudioBtn.addEventListener('click', () => {
+          const toSpeak = currentRaceAnswer || raceQuestionEl.textContent || '';
+          // prefer Spanish for answers
+          speakPhrase(toSpeak, 'es-ES');
+        });
+      }
+
+      function handleRaceChoice(button, isCorrect) {
+        if (!raceActive) return;
+        if (raceTimer) { clearTimeout(raceTimer); raceTimer = null; }
+        const userPartyObj = raceParties.find(p=>p.isUser);
+        if (isCorrect) {
+          // award progress based on party size
+          const boost = 18 + (userPartyObj.members.length * 2);
+          userPartyObj.progress = Math.min(100, userPartyObj.progress + boost);
+          button.classList.add('correct');
+        } else {
+          button.classList.add('wrong');
+          // small penalty
+          userPartyObj.progress = Math.max(0, userPartyObj.progress - 6);
+        }
+        // send progress to server if in a live room; do not simulate opponents
+        try {
+          if (joinedRoom && socket) socket.emit('updateProgress', { room: joinedRoomName, progress: userPartyObj.progress });
+        } catch(e) { console.warn(e); }
+        updateTracksUI();
+        setTimeout(checkForWinnerOrContinue, 700);
+      }
+
+      function advanceOpponents(min, max) {
+        // kept for offline fallback only
+        raceParties.forEach(p=>{ if (!p.isUser) p.progress = Math.min(100, p.progress + (Math.random()*(max-min)+min)); });
+      }
+
+      function checkForWinnerOrContinue() {
+        const winner = raceParties.find(p=>p.progress>=100);
+        if (winner) {
+          raceActive = false;
+          raceQuestionEl.textContent = `Race finished — ${winner.name} won!`;
+          updateTracksUI();
+          // show simple leaderboard
+          setTimeout(()=>{
+            alert(`Race over — ${winner.name} wins!`);
+          },200);
+          return;
+        }
+        // continue next turn
+        raceTurn();
+      }
+
+      skipRaceBtn.addEventListener('click', ()=>{
+        if (!raceActive) return; if (raceTimer) { clearTimeout(raceTimer); raceTimer=null; }
+        if (joinedRoom && socket) {
+          setMatchStatus('Skipped — waiting for others.');
+          // no automatic opponent progress
+          return;
+        }
+        advanceOpponents(6,16); updateTracksUI(); checkForWinnerOrContinue();
+      });
+
+      startRaceBtn.addEventListener('click', ()=>{
+        if (joinedRoom && raceParties.length < 2) {
+          alert('Waiting for at least one other player to join the room before starting the race.');
+          return;
+        }
+        startRace();
+      });
+      closeRaceBtn.addEventListener('click', ()=>{ closeRaceOverlay(); });
+
+      // wire Try It button to race overlay instead of centered modal
+      if (tryItBtn) tryItBtn.addEventListener('click', openRaceOverlay);
       if (showExampleBtn) showExampleBtn.addEventListener('click', () => { showSlide('slide-3'); setMatchStatus('Example shown. Press Try It Yourself when ready.'); });
       if (exitGameBtn) exitGameBtn.addEventListener('click', closeGameOverlay);
       const leaderboardOverlay = document.getElementById('leaderboardOverlay');
@@ -1687,5 +2349,3 @@
     </script>
   </body>
 </html>
-
-
